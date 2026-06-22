@@ -1,0 +1,58 @@
+@model List<EquipmentTrashItemViewModel>
+@{
+    ViewData["Title"] = "Trash - Deleted Equipment";
+}
+<div class="page-header" style="margin-bottom: 20px;">
+    <div>
+        <h2 class="page-title" style="margin: 0; font-size: 2rem; font-weight: bold; color: #1a202c;">Trash - Deleted Equipment</h2>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="success-box" style="margin-bottom: 20px; padding: 15px; background-color: #d4edda; color: #155724; border-radius: 6px; border: 1px solid #c3e6cb;">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (Model.Count == 0)
+{
+    <p>Thùng rác trống.</p>
+}
+else
+{
+    <table class="table table-bordered table-striped mt-3" style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white;">
+        <thead>
+            <tr style="border-bottom: 2px solid #ddd;">
+                <th style="padding: 12px 10px; text-align: left; width: 8%; color: white; background-color: #1a202c;">ID</th>
+                <th style="padding: 12px 10px; text-align: left; color: white; background-color: #1a202c;">Name</th>
+                <th style="padding: 12px 10px; text-align: left; width: 18%; color: white; background-color: #1a202c;">Deleted At</th>
+                <th style="padding: 12px 10px; text-align: left; width: 15%; color: white; background-color: #1a202c;">Deleted By</th>
+                <th style="padding: 12px 10px; text-align: left; width: 22%; color: white; background-color: #1a202c;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 12px 10px;">@item.EquipId</td>
+                    <td style="padding: 12px 10px;">@item.EquipName</td>
+                    <td style="padding: 12px 10px;">@(item.DeletedAt.HasValue ? item.DeletedAt.Value.ToString("dd/MM/yyyy") : "N/A")</td>
+                    <td style="padding: 12px 10px;">@item.DeletedBy</td>
+                    <td style="padding: 12px 10px;">
+                        <form asp-controller="Equipment" asp-action="Restore" asp-route-id="@item.EquipId" method="post" style="display:inline; margin-right: 10px;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" style="background: none; border: none; color: #2b6cb0; padding: 0; cursor: pointer; text-decoration: underline; font: inherit;">[Restore]</button>
+                        </form>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="alert-box" style="margin-top: 30px; padding: 20px; background-color: #fffaf0; border: 1px solid #feebc8; border-radius: 8px;">
+    <h3 style="margin-top: 0; color: #dd6b20; font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;">Soft Delete Rule</h3>
+    <p style="color: #7b341e; margin: 0; font-size: 0.95rem;">Delete chỉ set IsDeleted=true và DeletedAt=DateTime.Now. Không xóa record khỏi database.</p>
+</div>

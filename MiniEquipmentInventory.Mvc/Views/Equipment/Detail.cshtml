@@ -1,0 +1,84 @@
+@model EquipmentDetailViewModel
+
+@{
+    ViewData["Title"] = "Equipment Detail";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Equipment Detail</h2>
+        <p class="page-description">
+            Thông tin chi tiết của thiết bị trong kho.
+        </p>
+    </div>
+    <a class="btn btn-light" href="/Equipment">
+        Quay lại danh sách
+    </a>
+</div>
+
+<div class="detail-layout">
+    <div>
+        <table class="table table-bordered">
+            <tr>
+                <th>ID</th>
+                <td>@Model.EquipId</td>
+            </tr>
+            <tr>
+                <th>Mã thiết bị</th>
+                <td>@Model.EquipCode</td>
+            </tr>
+            <tr>
+                <th>Tên thiết bị</th>
+                <td>@Model.EquipName</td>
+            </tr>
+            <tr>
+                <th>Nhóm thiết bị</th>
+                <td>@Model.EquipCategory</td>
+            </tr>
+            <tr>
+                <th>Nhà cung cấp</th>
+                <td>@Model.EquipSupplier</td>
+            </tr>
+            <tr>
+                <th>Giá bán</th>
+                <td>@Model.PriceText</td>
+            </tr>
+            <tr>
+                <th>Số lượng tồn kho</th>
+                <td>@Model.EquipQuantity</td>
+            </tr>
+            <tr>
+                <th>Mức tồn tối thiểu</th>
+                <td>@Model.EquipMinStock</td>
+            </tr>
+            <tr>
+                <th>Giá trị tồn kho</th>
+                <td>@Model.InventoryValueText</td>
+            </tr>
+            <tr>
+                <th>Trạng thái</th>
+                <td>@Model.StockStatus</td>
+            </tr>
+            <tr>
+                <th>Cập nhật lần cuối</th>
+                <td>@Model.LastUpdatedText</td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <div class="side-card warning">
+            <h4>Trạng thái tồn kho</h4>
+            <h3>@Model.StockStatus</h3>
+        </div>
+        <div class="side-card info">
+            <h4>Giá trị tồn kho hiện tại</h4>
+            <h3>@Model.InventoryValueText</h3>
+            <p>Tính theo giá bán và số lượng tồn kho hiện có.</p>
+        </div>
+        <div class="side-card success">
+            <h4>Cập nhật lần cuối</h4>
+            <h3>@Model.LastUpdatedText</h3>
+            <p>Thông tin thiết bị được cập nhật gần nhất.</p>
+        </div>
+    </div>
+</div>

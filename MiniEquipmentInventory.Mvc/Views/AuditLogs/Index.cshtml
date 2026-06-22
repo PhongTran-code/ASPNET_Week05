@@ -1,0 +1,58 @@
+@model IEnumerable<MiniEquipmentInventory.Mvc.Models.AuditLog>
+
+@{
+    ViewData["Title"] = "Audit Logs";
+}
+
+<div class="page-header" style="margin-bottom: 24px;">
+    <div>
+        <h1 class="page-title" style="font-size: 36px; font-weight: bold; margin: 0 0 8px; color: #111827;">Audit Logs</h1>
+    </div>
+</div>
+
+<div style="background: white; border: 1px solid #e2e8f0; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+    <table style="width: 100%; border-collapse: collapse; margin: 0;">
+        <thead>
+            <tr style="background-color: #1e293b; color: white;">
+                <th style="padding: 12px 16px; text-align: left; font-weight: bold; font-size: 15px; color: white; border-bottom: 2px solid #e2e8f0; width: 15%;">Time</th>
+                <th style="padding: 12px 16px; text-align: left; font-weight: bold; font-size: 15px; color: white; border-bottom: 2px solid #e2e8f0; width: 15%;">Level</th>
+                <th style="padding: 12px 16px; text-align: left; font-weight: bold; font-size: 15px; color: white; border-bottom: 2px solid #e2e8f0; width: 70%;">Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Model)
+            {
+                var levelColor = "";
+                var messageColor = "";
+                
+                if (log.Level == "Warning")
+                {
+                    levelColor = "color: #d97706;";
+                    messageColor = "color: #d97706;";
+                }
+                else if (log.Level == "Error")
+                {
+                    levelColor = "color: #dc2626;";
+                    messageColor = "color: #dc2626;";
+                }
+                else
+                {
+                    levelColor = "color: #475569;";
+                    messageColor = "color: #475569;";
+                }
+
+                <tr style="border-bottom: 1px solid #e2e8f0; background-color: white;">
+                    <td style="padding: 12px 16px; font-size: 14px; color: #475569; vertical-align: middle;">@log.Time.ToString("dd/MM HH:mm")</td>
+                    <td style="padding: 12px 16px; font-size: 14px; font-weight: bold; vertical-align: middle; @levelColor">@log.Level</td>
+                    <td style="padding: 12px 16px; font-size: 14px; vertical-align: middle; @messageColor">@log.Message</td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="3" style="padding: 24px; text-align: center; color: #64748b; font-size: 14px;">Chưa có lịch sử thao tác nào được ghi nhận.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

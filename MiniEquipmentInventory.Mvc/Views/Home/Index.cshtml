@@ -1,0 +1,141 @@
+@model MiniEquipmentInventory.Mvc.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<style>
+    .dashboard-container {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 24px;
+        margin-bottom: 32px;
+    }
+    .stat-card {
+        border-radius: 12px;
+        padding: 24px;
+        color: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .card-blue {
+        background-color: #2563eb;
+    }
+    .card-green {
+        background-color: #10b981;
+    }
+    .card-orange {
+        background-color: #ea580c;
+    }
+    .card-purple {
+        background-color: #7c3aed;
+    }
+    .stat-title {
+        font-size: 16px;
+        font-weight: 600;
+        opacity: 0.9;
+        margin-bottom: 8px;
+    }
+    .stat-number {
+        font-size: 38px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        line-height: 1;
+    }
+    .stat-subtitle {
+        font-size: 13px;
+        opacity: 0.8;
+    }
+    .quick-links-box {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+    .quick-links-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-top: 0;
+        margin-bottom: 24px;
+    }
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+    }
+    .link-item {
+        display: block;
+        padding: 16px 20px;
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        color: #2563eb;
+        font-weight: 600;
+        font-size: 15px;
+        text-decoration: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+    .link-item:hover {
+        background-color: #eff6ff;
+        border-color: #bfdbfe;
+        color: #1d4ed8;
+        text-decoration: none;
+    }
+</style>
+
+<div class="dashboard-container">
+    <h1 style="font-size: 32px; font-weight: 800; color: #0f172a; margin: 0 0 8px;">Admin Dashboard</h1>
+    
+    <div class="stats-grid">
+        <!-- Card 1: Equipment -->
+        <div class="stat-card card-blue">
+            <div class="stat-title">Equipment</div>
+            <div class="stat-number" style="color: white;">@Model.TotalEquipment</div>
+            <div class="stat-subtitle">All equipment</div>
+        </div>
+
+        <!-- Card 2: Active -->
+        <div class="stat-card card-green">
+            <div class="stat-title">Active</div>
+            <div class="stat-number" style="color: white;">@Model.ActiveEquipment</div>
+            <div class="stat-subtitle">IsDeleted = false</div>
+        </div>
+
+        <!-- Card 3: Deleted -->
+        <div class="stat-card card-orange">
+            <div class="stat-title">Deleted</div>
+            <div class="stat-number" style="color: white;">@Model.DeletedEquipment</div>
+            <div class="stat-subtitle">In trash</div>
+        </div>
+
+        <!-- Card 4: Logs Today -->
+        <div class="stat-card card-purple">
+            <div class="stat-title">Logs Today</div>
+            <div class="stat-number" style="color: white;">@Model.LogsToday</div>
+            <div class="stat-subtitle">Serilog entries</div>
+        </div>
+    </div>
+
+    <!-- Quick Links Box -->
+    <div class="quick-links-box">
+        <h2 class="quick-links-title">Quick Links</h2>
+        <div class="links-grid">
+            <a href="/Equipment" class="link-item">Equipment List</a>
+            <a href="/Equipment/Create" class="link-item">Create Equipment</a>
+            <a href="/Equipment/Trash" class="link-item">Trash (Deleted)</a>
+            <a href="/AuditLogs" class="link-item">Audit Logs</a>
+            <a href="/health/ready" class="link-item">Health Check</a>
+            <a href="/api/equipment/9999" class="link-item">API Docs</a>
+        </div>
+    </div>
+</div>

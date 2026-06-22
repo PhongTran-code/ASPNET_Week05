@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - MiniEquipmentInventory.Mvc</title>
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+        <header class="site-header">
+            <div class="container header-content">
+                <div class="brand">
+                    <a asp-controller="Home" asp-action="Index" style="text-decoration: none; display: flex; align-items: baseline;">
+                        <span style="font-weight: 800; color: white; font-size: 22px;">AspNet Lab05 MVC</span>
+                        <span style="font-size: 15px; color: #9ca3af; font-weight: normal; margin-left: 6px;">Dashboard</span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <a asp-controller="Equipment" asp-action="Index">Equipment</a>
+                    <a asp-controller="Equipment" asp-action="Create">Create</a>
+                    <a asp-controller="Equipment" asp-action="Trash">Trash</a>
+                    <a asp-controller="AuditLogs" asp-action="Index">Audit Logs</a>
+                    <a href="/health/ready">Health</a>
+                    <a href="/api/equipment/9999">API</a>
+                </nav>
+            </div>
+        </header>
+        <main class="container main-content">
+            @RenderBody()
+        </main>
+        <footer class="site-footer">
+            <div class="container footer-content">
+                <span>&copy; 2026 - MiniEquipmentInventory.Mvc - Lab04</span>
+                <a href="#">Privacy</a>
+            </div>
+        </footer>
+        @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,59 @@
+@model List<MiniEquipmentInventory.Mvc.ViewModels.CategoryListItemViewModel>
+@{
+    ViewData["Title"] = "Danh mục thiết bị";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Category & Equipment Relationship</h2>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped mt-3">
+    <thead class="auto-sync-header">
+        <tr>
+            <th>Category</th>
+            <th>Equipment</th>
+            <th>Relationship</th>
+            <th>DbSet</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><strong>@item.Name</strong></td>
+                <td>
+                    @if (string.IsNullOrEmpty(item.EquipmentsList))
+                    {
+                        <span class="text-muted">Chưa có thiết bị</span>
+                    }
+                    else
+                    {
+                        @item.EquipmentsList <span class="badge bg-secondary" title="Số lượng">(@item.EquipmentCount)</span>
+                    }
+                </td>
+                <td><span class="badge bg-info text-dark">@item.Relationship</span></td>
+                <td><code>@item.DbSet</code></td>
+                <td><span class="badge bg-success">@item.ActionState</span></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var headerElement = document.querySelector('.site-header');
+            if (headerElement) {
+                var headerBgColor = window.getComputedStyle(headerElement).backgroundColor;
+                var thElements = document.querySelectorAll('.auto-sync-header th');
+                thElements.forEach(function(th) {
+                    th.style.backgroundColor = headerBgColor;
+                    th.style.color = "white";
+                });
+            }
+        });
+    </script>
+}

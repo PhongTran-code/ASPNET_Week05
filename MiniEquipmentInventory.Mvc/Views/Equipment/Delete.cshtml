@@ -1,0 +1,59 @@
+@model EquipmentDetailViewModel
+@{
+    ViewData["Title"] = "Xác nhận xóa thiết bị";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Xác nhận xóa thiết bị</h2>
+        <p class="page-description">Bạn có chắc chắn muốn xóa mềm thiết bị này không?</p>
+    </div>
+    <a class="btn btn-light" asp-controller="Equipment" asp-action="Index">Quay lại</a>
+</div>
+
+<div class="form-layout" style="margin-top: 20px;">
+    <div class="form-box" style="padding: 20px; border: 1px solid #ddd; border-radius: 6px; background-color: #fff; max-width: 600px;">
+        <h3 style="margin-top: 0; color: #e63946;">@Model.EquipName</h3>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;" />
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold; width: 40%;">Mã SKU (Code):</td>
+                <td style="padding: 8px 0;">@Model.EquipCode</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Danh mục:</td>
+                <td style="padding: 8px 0;">@Model.EquipCategory</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Nhà cung cấp:</td>
+                <td style="padding: 8px 0;">@Model.EquipSupplier</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Giá bán:</td>
+                <td style="padding: 8px 0;">@Model.PriceText</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Số lượng tồn:</td>
+                <td style="padding: 8px 0;">@Model.EquipQuantity</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Mức tồn tối thiểu:</td>
+                <td style="padding: 8px 0;">@Model.EquipMinStock</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Trạng thái tồn kho:</td>
+                <td style="padding: 8px 0;">@Model.StockStatus</td>
+            </tr>
+        </table>
+        
+        <form asp-controller="Equipment" asp-action="Delete" asp-route-id="@Model.EquipId" method="post" style="margin-top: 20px;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn" style="background-color: #e63946; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                Xác nhận xóa mềm
+            </button>
+            <a class="btn btn-secondary" asp-controller="Equipment" asp-action="Index" style="margin-left: 10px; text-decoration: none; display: inline-block;">
+                Hủy bỏ
+            </a>
+        </form>
+    </div>
+</div>

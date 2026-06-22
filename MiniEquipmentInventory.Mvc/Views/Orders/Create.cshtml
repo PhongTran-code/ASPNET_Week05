@@ -1,0 +1,59 @@
+@model MiniEquipmentInventory.Mvc.ViewModels.OrderCreateViewModel
+@{
+    ViewData["Title"] = "Create Order";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Create New Order</h2>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<div class="form-layout">
+    <form class="form-box" asp-controller="Orders" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="CustomerName">Customer Name</label>
+            <input asp-for="CustomerName" class="form-control" placeholder="Enter customer name..." />
+            <span asp-validation-for="CustomerName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EquipmentId">Select Equipment</label>
+            <select asp-for="EquipmentId" class="form-control" asp-items="Model.AvailableEquipments">
+                <option value="">-- Select equipment to buy --</option>
+            </select>
+            <span asp-validation-for="EquipmentId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Quantity">Purchase Quantity</label>
+            <input asp-for="Quantity" class="form-control" type="number" min="1" placeholder="Example: 2" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Confirm Order</button>
+    </form>
+    
+    <div class="info-box">
+        <h3>EF Core Transaction</h3>
+        <p>The ordering process consists of 3 simultaneous steps:</p>
+        <ol>
+            <li>Create a record in the <strong>Orders</strong> table.</li>
+            <li>Create a detail record in the <strong>OrderItems</strong> table.</li>
+            <li>Deduct the quantity (Stock) in the <strong>Equipments</strong> table.</li>
+        </ol>
+        <p>Thanks to <code>BeginTransactionAsync()</code>, if there's an error (e.g., network failure halfway), all 3 steps will automatically <strong>Rollback</strong>, ensuring your inventory is never inaccurate!</p>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = $"Lỗi {ViewData["StatusCode"]}";
+}
+
+<div class="error-container text-center" style="padding: 60px 0; max-width: 600px; margin: 0 auto; text-align: center;">
+    <div class="error-badge" style="font-size: 120px; font-weight: 800; color: #e63946; line-height: 1; margin-bottom: 20px;">
+        @ViewData["StatusCode"]
+    </div>
+    <h2 style="font-weight: 600; margin-bottom: 15px; color: #1d3557;">
+        @ViewData["Message"]
+    </h2>
+    <p style="color: #457b9d; font-size: 16px; margin-bottom: 30px;">
+        Hãy kiểm tra lại đường dẫn hoặc quay về trang chủ để tiếp tục sử dụng hệ thống.
+    </p>
+    <div>
+        <a asp-controller="Home" asp-action="Index" class="btn" style="background-color: #1d3557; color: white; padding: 12px 30px; font-weight: 500; text-decoration: none; border-radius: 6px; display: inline-block; border: none;">
+            Quay lại trang chủ
+        </a>
+    </div>
+</div>
