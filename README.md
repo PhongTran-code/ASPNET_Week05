@@ -10,9 +10,8 @@
 
 - **Backend**: ASP.NET Core MVC (.NET 8.0)
 - **Database ORM**: Entity Framework Core với SQL Server
-- **Logging**: Serilog (ghi ra Console và lưu file xoay vòng theo ngày trong thư mục `logs/`)
-- **Frontend**: Razor Views, HTML5, CSS3 (Vanilla CSS), JavaScript, jQuery, jQuery Validation
-
+- **Logging**: Serilog 
+- **Frontend**: Razor Views, HTML5, CSS3, JavaScript
 ---
 
 ## 📁 Cấu Trúc Thư Mục Hiện Tại (Lab05)

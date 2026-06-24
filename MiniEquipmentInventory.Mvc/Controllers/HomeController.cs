@@ -21,16 +21,12 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        // Lấy tổng số lượng thiết bị (gồm cả xóa mềm)
         var totalEquipment = await _context.Equipments.IgnoreQueryFilters().CountAsync();
         
-        // Lấy số thiết bị chưa xóa mềm
         var activeEquipment = await _context.Equipments.CountAsync();
         
-        // Lấy số thiết bị đã bị xóa mềm (thùng rác)
         var deletedEquipment = await _context.Equipments.IgnoreQueryFilters().CountAsync(e => e.IsDeleted);
         
-        // Lấy số audit logs sinh ra trong ngày hôm nay
         var today = DateTime.Today;
         var logsToday = await _context.AuditLogs.CountAsync(l => l.Time >= today);
 

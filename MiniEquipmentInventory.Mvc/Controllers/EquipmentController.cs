@@ -174,4 +174,19 @@ public class EquipmentController : Controller
         TempData["SuccessMessage"] = "Khôi phục thiết bị thành công.";
         return RedirectToAction(nameof(Trash));
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Search(string? keyword, string? stockStatus)
+    {
+        var results = await _equipmentService.SearchEquipmentsAsync(keyword, stockStatus);
+
+        var model = new EquipmentSearchViewModel
+        {
+            Keyword = keyword,
+            StockStatus = stockStatus,
+            Results = results
+        };
+
+        return View(model);
+    }
 }

@@ -10,4 +10,5 @@ public interface IEquipmentService
     Task<bool> SoftDeleteAsync(int id);
     Task<List<EquipmentTrashItemViewModel>> GetTrashAsync();
     Task<bool> RestoreAsync(int id);
+    Task<List<EquipmentListItemViewModel>> SearchEquipmentsAsync(string? keyword, string? stockStatus);
 }

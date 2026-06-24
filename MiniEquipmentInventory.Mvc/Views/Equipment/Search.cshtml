@@ -1,0 +1,148 @@
+@model EquipmentSearchViewModel
+
+@{
+    ViewData["Title"] = "Search Equipment";
+}
+
+<style>
+    .search-panel {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .form-row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+    }
+    .form-item {
+        flex: 1;
+        min-width: 200px;
+    }
+    .form-item label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 6px;
+        color: #4a5568;
+        font-size: 14px;
+    }
+    .input-field {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e0;
+        border-radius: 6px;
+        font-size: 15px;
+        box-sizing: border-box;
+    }
+    .input-field:focus {
+        border-color: #2b6cb0;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(66,153,225,0.15);
+    }
+    .btn-search {
+        background-color: #2b6cb0;
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        height: 40px;
+    }
+    .btn-search:hover {
+        background-color: #2c5282;
+    }
+    .no-results {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 32px;
+        text-align: center;
+        color: #718096;
+        font-size: 15px;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div>
+        <h2 class="page-title" style="margin: 0; font-size: 2rem; font-weight: bold; color: #1a202c;">Search & Filter Equipment</h2>
+    </div>
+    <div>
+        <a class="btn btn-secondary" asp-controller="Equipment" asp-action="Index" style="background-color: #4a5568; color: white; border: none; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">
+            Back to List
+        </a>
+    </div>
+</div>
+
+<!-- Search Panel -->
+<div class="search-panel">
+    <form method="get" asp-controller="Equipment" asp-action="Search" class="form-row">
+        <div class="form-item">
+            <label for="keyword">Từ khóa tìm kiếm (Tên, SKU hoặc Mô tả)</label>
+            <input type="text" id="keyword" name="keyword" value="@Model.Keyword" class="input-field" placeholder="Nhập từ khóa cần tìm..." />
+        </div>
+        
+        <div class="form-item">
+            <label for="stockStatus">Trạng thái tồn kho</label>
+            <select id="stockStatus" name="stockStatus" class="input-field" style="background-color: white;">
+                <!option value="all" @(Model.StockStatus == "all" ? "selected" : "")>Tất cả trạng thái</!option>
+                <!option value="inStock" @(Model.StockStatus == "inStock" ? "selected" : "")>Còn hàng (Trên ngưỡng)</!option>
+                <!option value="lowStock" @(Model.StockStatus == "lowStock" ? "selected" : "")>Sắp hết hàng (Dưới hoặc bằng ngưỡng)</!option>
+                <!option value="outOfStock" @(Model.StockStatus == "outOfStock" ? "selected" : "")>Hết hàng (Tồn kho = 0)</!option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn-search">Tìm kiếm & Lọc</button>
+    </form>
+</div>
+
+<!-- Results Panel -->
+@if (Model.Results.Count > 0)
+{
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <table style="width: 100%; border-collapse: collapse; margin: 0;">
+            <thead>
+                <tr style="border-bottom: 2px solid #ddd;">
+                    <th style="padding: 12px 10px; text-align: left; width: 8%; color: white; background-color: #1a202c;">ID</th>
+                    <th style="padding: 12px 10px; text-align: left; color: white; background-color: #1a202c;">Name</th>
+                    <th style="padding: 12px 10px; text-align: left; width: 15%; color: white; background-color: #1a202c;">Price</th>
+                    <th style="padding: 12px 10px; text-align: left; width: 10%; color: white; background-color: #1a202c;">Stock</th>
+                    <th style="padding: 12px 10px; text-align: left; width: 18%; color: white; background-color: #1a202c;">Created At</th>
+                    <th style="padding: 12px 10px; text-align: left; width: 18%; color: white; background-color: #1a202c;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Results)
+                {
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 12px 10px;">@item.EquipId</td>
+                        <td style="padding: 12px 10px;">@item.EquipName</td>
+                        <td style="padding: 12px 10px;">@item.PriceText</td>
+                        <td style="padding: 12px 10px;">@item.EquipQuantity</td>
+                        <td style="padding: 12px 10px;">@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td style="padding: 12px 10px;">
+                            <a asp-controller="Equipment" asp-action="Edit" asp-route-id="@item.EquipId" style="text-decoration: none; color: #2b6cb0; margin-right: 10px;">[Edit]</a>
+                            <a asp-controller="Equipment" asp-action="Delete" asp-route-id="@item.EquipId" style="text-decoration: none; color: #e63946;">[Delete]</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    <p style="margin-top: 20px; color: #718096; font-size: 0.9rem;">Kết quả tìm kiếm chỉ hiển thị các thiết bị chưa bị xóa mềm.</p>
+}
+else
+{
+    <div class="no-results">
+        <strong>Không tìm thấy thiết bị nào khớp với điều kiện tìm kiếm.</strong>
+        <p style="margin: 8px 0 0; font-size: 14px; color: #a0aec0;">Vui lòng thử lại với từ khóa khác hoặc thay đổi bộ lọc tồn kho.</p>
+    </div>
+}

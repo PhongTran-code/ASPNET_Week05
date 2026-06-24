@@ -173,4 +173,46 @@ public class EquipmentService : IEquipmentService
 
         return true;
     }
+
+    public async Task<List<EquipmentListItemViewModel>> SearchEquipmentsAsync(string? keyword, string? stockStatus)
+    {
+        var query = _context.Equipments
+            .Include(e => e.Category)
+            .AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            var cleanKeyword = keyword.Trim();
+            query = query.Where(e => e.EquipName.Contains(cleanKeyword) || 
+                                     e.EquipCode.Contains(cleanKeyword) || 
+                                     (e.Description != null && e.Description.Contains(cleanKeyword)));
+        }
+
+        if (!string.IsNullOrWhiteSpace(stockStatus) && stockStatus != "all")
+        {
+            int threshold = _settings.LowStockThreshold;
+            query = stockStatus switch
+            {
+                "outOfStock" => query.Where(e => e.EquipQuantity == 0),
+                "lowStock" => query.Where(e => e.EquipQuantity > 0 && e.EquipQuantity <= threshold),
+                "inStock" => query.Where(e => e.EquipQuantity > threshold),
+                _ => query
+            };
+        }
+
+        return await query
+            .OrderBy(e => e.EquipId)
+            .Select(e => new EquipmentListItemViewModel
+            {
+                EquipId = e.EquipId,
+                EquipCode = e.EquipCode,
+                EquipName = e.EquipName,
+                EquipUnitPrice = e.EquipUnitPrice,
+                EquipQuantity = e.EquipQuantity,
+                EquipMinStock = e.EquipMinStock,
+                EquipCategory = e.Category != null ? e.Category.Name : "N/A",
+                CreatedAt = e.CreatedAt
+            })
+            .ToListAsync();
+    }
 }
