@@ -42,6 +42,7 @@ builder.Services.AddProblemDetails(options =>
             context.HttpContext.TraceIdentifier;
         context.ProblemDetails.Extensions["timestamp"] =
             DateTimeOffset.UtcNow;
+        context.ProblemDetails.Extensions.Remove("exception");
     };
 });
 
@@ -76,82 +77,18 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions
     Predicate = check => check.Tags.Contains("ready"),
     ResponseWriter = async (context, report) =>
     {
-        context.Response.ContentType = "text/html; charset=utf-8";
-        var html = $@"
-<!DOCTYPE html>
-<html lang=""vi"">
-<head>
-    <meta charset=""utf-8"" />
-    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
-    <title>Health Check - MiniEquipmentInventory.Mvc</title>
-    <link rel=""stylesheet"" href=""/css/site.css"" />
-</head>
-<body>
-    <header class=""site-header"">
-        <div class=""container header-content"">
-            <div class=""brand"">
-                <a href=""/"" style=""text-decoration: none; display: flex; align-items: baseline;"">
-                    <span style=""font-weight: 800; color: white; font-size: 22px;"">AspNet Lab05 MVC</span>
-                    <span style=""font-size: 15px; color: #9ca3af; font-weight: normal; margin-left: 6px;"">Dashboard</span>
-                </a>
-            </div>
-            <nav class=""main-nav"">
-                <a href=""/Equipment"">Equipment</a>
-                <a href=""/Equipment/Create"">Create</a>
-                <a href=""/Equipment/Trash"">Trash</a>
-                <a href=""/AuditLogs"">Audit Logs</a>
-                <a href=""/health/ready"">Health</a>
-                <a href=""/api/equipment/9999"">API</a>
-            </nav>
-        </div>
-    </header>
-    <main class=""container main-content"" style=""margin-top: 20px;"">
-        <h2 class=""page-title"" style=""margin: 0; font-size: 2rem; font-weight: bold; color: #1a202c;"">Health Check - /health/ready</h2>
-        <table class=""table table-bordered table-striped mt-3"" style=""width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white;"">
-            <thead>
-                <tr style=""background-color: #1a202c; color: white; border-bottom: 2px solid #ddd;"">
-                    <th style=""padding: 12px 10px; text-align: left; color: white;"">Check</th>
-                    <th style=""padding: 12px 10px; text-align: left; color: white;"">Status</th>
-                    <th style=""padding: 12px 10px; text-align: left; color: white;"">Description</th>
-                </tr>
-            </thead>
-            <tbody>";
-
-        foreach (var entry in report.Entries)
+        context.Response.ContentType = "application/json; charset=utf-8";
+        var response = new
         {
-            var statusClass = entry.Value.Status == HealthStatus.Healthy ? "Healthy" : "Unhealthy";
-            var color = entry.Value.Status == HealthStatus.Healthy ? "#2ec4b6" : "#e63946";
-            var desc = entry.Value.Description ?? (entry.Key == "self" ? "Application is running." : "Database connection is healthy.");
-            html += $@"
-                <tr style=""border-bottom: 1px solid #e2e8f0;"">
-                    <td style=""padding: 12px 10px; font-weight: bold;"">{entry.Key}</td>
-                    <td style=""padding: 12px 10px;"">
-                        <span class=""badge"" style=""background-color: {color}; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;"">{statusClass}</span>
-                    </td>
-                    <td style=""padding: 12px 10px;"">{desc}</td>
-                </tr>";
-        }
-
-        var overallColor = report.Status == HealthStatus.Healthy ? "#2ec4b6" : "#e63946";
-        html += $@"
-                <tr style=""border-bottom: 1px solid #e2e8f0; font-weight: bold;"">
-                    <td style=""padding: 12px 10px;"">Overall Status</td>
-                    <td style=""padding: 12px 10px;"">
-                        <span class=""badge"" style=""background-color: {overallColor}; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;"">{report.Status}</span>
-                    </td>
-                    <td style=""padding: 12px 10px;"">All checks are healthy.</td>
-                </tr>
-            </tbody>
-        </table>
-    </main>
-    <footer class=""site-footer"" style=""margin-top: 40px;"">
-        <div class=""container footer-content"">
-            <span>&copy; 2026 - MiniEquipmentInventory.Mvc - Lab05</span>
-        </div>
-    </footer>
-</body>
-</html>";
-        await context.Response.WriteAsync(html);
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(e => new
+            {
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+                description = e.Value.Description ?? (e.Key == "self" ? "Application is running." : "Database connection is healthy.")
+            }).ToList()
+        };
+        await context.Response.WriteAsJsonAsync(response);
     }
 });
 
@@ -179,7 +116,11 @@ app.MapGet("/api/equipment/{id:int}", async (int id, AppDbContext db, HttpContex
             title: "Equipment not found",
             detail: $"The equipment with id {id} was not found.",
             statusCode: StatusCodes.Status404NotFound,
-            instance: http.Request.Path);
+            instance: http.Request.Path,
+            extensions: new Dictionary<string, object?>
+            {
+                { "errorCode", "EQUIPMENT_NOT_FOUND" }
+            });
     }
 
     return Results.Ok(equipment);
