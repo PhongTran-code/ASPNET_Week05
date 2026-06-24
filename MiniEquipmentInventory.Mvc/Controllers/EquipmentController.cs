@@ -189,4 +189,58 @@ public class EquipmentController : Controller
 
         return View(model);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> AdjustStock(int id)
+    {
+        var equipment = await _context.Equipments.FirstOrDefaultAsync(e => e.EquipId == id);
+        if (equipment == null) return NotFound("Không tìm thấy thiết bị.");
+
+        var model = new EquipmentAdjustStockViewModel
+        {
+            EquipId = equipment.EquipId,
+            EquipName = equipment.EquipName,
+            EquipCode = equipment.EquipCode,
+            EquipQuantity = equipment.EquipQuantity,
+            RowVersion = Convert.ToBase64String(equipment.RowVersion)
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AdjustStock(int id, EquipmentAdjustStockViewModel model)
+    {
+        if (id != model.EquipId) return NotFound();
+        if (!ModelState.IsValid) return View(model);
+
+        try
+        {
+            await _equipmentService.AdjustStockAsync(model.EquipId, model.EquipQuantity, model.RowVersion);
+            TempData["SuccessMessage"] = $"Đã điều chỉnh số lượng thiết bị {model.EquipName} thành công.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            ModelState.AddModelError(string.Empty, "Dữ liệu thiết bị đã bị người dùng khác thay đổi trước đó. Vui lòng xem số lượng mới nhất bên dưới và thực hiện lại nếu cần.");
+            
+            var latestEquipment = await _context.Equipments.AsNoTracking().FirstOrDefaultAsync(e => e.EquipId == id);
+            if (latestEquipment != null)
+            {
+                model.RowVersion = Convert.ToBase64String(latestEquipment.RowVersion);
+                ViewBag.LatestQuantity = latestEquipment.EquipQuantity;
+            }
+            return View(model);
+        }
+        catch (ArgumentException ex)
+        {
+            ModelState.AddModelError(nameof(model.EquipQuantity), ex.Message);
+            return View(model);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

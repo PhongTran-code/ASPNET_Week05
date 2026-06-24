@@ -11,4 +11,5 @@ public interface IEquipmentService
     Task<List<EquipmentTrashItemViewModel>> GetTrashAsync();
     Task<bool> RestoreAsync(int id);
     Task<List<EquipmentListItemViewModel>> SearchEquipmentsAsync(string? keyword, string? stockStatus);
+    Task AdjustStockAsync(int id, int quantity, string rowVersion);
 }

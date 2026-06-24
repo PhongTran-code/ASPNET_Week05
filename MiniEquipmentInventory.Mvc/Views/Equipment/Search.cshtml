@@ -128,6 +128,7 @@
                         <td style="padding: 12px 10px;">@item.EquipQuantity</td>
                         <td style="padding: 12px 10px;">@item.CreatedAt.ToString("dd/MM/yyyy")</td>
                         <td style="padding: 12px 10px;">
+                            <a asp-controller="Equipment" asp-action="AdjustStock" asp-route-id="@item.EquipId" style="text-decoration: none; color: #dd6b20; margin-right: 10px; font-weight: bold;">[Adjust Stock]</a>
                             <a asp-controller="Equipment" asp-action="Edit" asp-route-id="@item.EquipId" style="text-decoration: none; color: #2b6cb0; margin-right: 10px;">[Edit]</a>
                             <a asp-controller="Equipment" asp-action="Delete" asp-route-id="@item.EquipId" style="text-decoration: none; color: #e63946;">[Delete]</a>
                         </td>

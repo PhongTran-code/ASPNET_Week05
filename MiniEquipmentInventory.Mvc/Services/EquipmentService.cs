@@ -215,4 +215,37 @@ public class EquipmentService : IEquipmentService
             })
             .ToListAsync();
     }
+
+    public async Task AdjustStockAsync(int id, int quantity, string rowVersion)
+    {
+        var equipment = await _context.Equipments.FirstOrDefaultAsync(e => e.EquipId == id);
+        if (equipment == null)
+        {
+            throw new KeyNotFoundException("Không tìm thấy thiết bị cần điều chỉnh.");
+        }
+
+        if (quantity < 0)
+        {
+            throw new ArgumentException("Số lượng tồn kho không được nhỏ hơn 0.");
+        }
+
+        equipment.EquipQuantity = quantity;
+        equipment.UpdatedAt = DateTime.Now;
+        equipment.EquipLastUpdatedAt = DateTime.Now;
+
+        _context.Entry(equipment).Property(e => e.RowVersion).OriginalValue = Convert.FromBase64String(rowVersion);
+
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Adjusted stock for Equipment. EquipmentId={EquipmentId}, NewQuantity={NewQuantity}", id, quantity);
+
+        var log = new AuditLog
+        {
+            Time = DateTime.Now,
+            Level = "Information",
+            Message = $"Adjusted stock for Equipment. EquipmentId={id}, NewQuantity={quantity}"
+        };
+        await _context.AuditLogs.AddAsync(log);
+        await _context.SaveChangesAsync();
+    }
 }
